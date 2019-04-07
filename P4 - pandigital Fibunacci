@@ -1,0 +1,61 @@
+import functools
+
+#Al crear iteraciones de altos volúmenes, se requiere una función de optimizar la generación de 
+#la secuencia de fibonacci.
+#Para esto se importa la librería de functools para optimizar la función que generará la secuencia de fibonacci
+
+@functools.lru_cache(None)
+def fib(n):
+    if n < 2:
+        return n
+    return fib(n-1) + fib(n-2)
+
+#Se crea una lista con todos los dígitos del 1 al 9 (como string)
+number = ['1','2','3','4','5','6','7','8','9']      
+
+#Función para validar que los últimos 9 digitos sean un pan digital
+
+def valida_ultimos_9(f):
+    '''Esta funciona se encarga de validar si los ÚLTIMOS nueve digitos del valor obtenido de la función de fibonacci. La función
+    devuelve 1 si el valor ingresado -k ésimo valor de Fn- tiene una secuencia pandigital en la función de fibonacci
+    para los ÚLTIMOS 9 dígitos -sin importar el orden-. La función devuelve 0 en caso contrario.'''
+    c = 0 #Se inicia un contador en cero. Si éste es aumentado, el registro no es una secuencia pandigital. 
+    t = str(fib(f)) #Se llama la función de fib (como string) para determinar el valor (en la secuencia fibonacci) del valor ingresado.
+    h = t[-9:] #Al quedar como string se puede indexar para traer los últimos 9 dígitos y asignarlo en la variable h.
+    if len(h) == 9 and '0' not in h:# Se valida que la cantidad de dígitos se de 9 y que no contengan el cero.
+        for i in number:#Se itera y valida respecto del listado origianl de los nueve dígitos
+            if h.count(i)  > 1: #En caso de que algún dígito esté mas de una vez, se aumenta el contador en uno.
+                c = c + 1
+        if c==0: #si al finalizar la iteración el contador no aumentó, la función devuelve el valor de uno.
+            return 1
+    return 0 #De lo contrario, devuelve cero.
+
+#La función valida_primeros9 realiza el mismo procedimiento que la función anterior, salvo que ésta vez valida sobre los 
+#primeros nueve dígitos 
+
+def valida_primeros_9(f):
+    '''Esta funciona se encarga de validar si los PRIMEROS nueve digitos del valor obtenido de la función de fibonacci. La función
+    devuelve 1 si el valor ingresado -k ésimo valor de Fn- tiene una secuencia pandigital en la función de fibonacci
+    para los PRIMEROS 9 dígitos - sin importar el orden-. La función devuelve 0 en caso contrario.'''
+    p = 0
+    t = str(fib(f))
+    h = t[:9] #Se asigna el valor de los primeros nueve dígitos a la variable h
+    if len(h) == 9 and '0' not in h:
+        for i in number:
+            if h.count(i)  > 1:
+                p = p + 1
+        if c==0:
+            return 1
+    return 0
+
+#Ahora se procede a realizar iteración sobre posibles valores de k para saber si se cumple con la condición de 
+#tener una secuencia pandigital en conjunto en los primeros y últimos nueve registros.
+
+#Se inicia la validación en k=541 (para reducir no. de iteraciones)
+k = 541
+while valida_ultimos_9(k) + valida_primeros_9(k) <= 1: #se realiza una iteración del valor de k sobre cada función.
+    k = k + 1 #En caso de que no tenga la secuencia pandigital, se aumenta el valor de k en uno para una nueva validación.
+    if valida_ultimos_9(k) + valida_primeros_9(k) == 2:#Si el registro de la iteración anterior es pandigital
+        break #se detiene la validación
+#se se muestra el valor del k-ésimo registro que cumple con la condición.
+print('El k-ésimo valor que tiene una función de fibonacci con un pan digital en los primeros y últimos 9 dígitos es:', k)
