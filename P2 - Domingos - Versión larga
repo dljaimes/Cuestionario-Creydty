@@ -1,0 +1,98 @@
+#VERSIÓN LARGA SIN USAR DATETIME
+
+import numpy as np
+
+#Se importa la librearía de Numpy para realziar las iteraciones sobre arrays.
+
+#Las fechas se manejan como arrays siendo el primer valor el año, el segundo el mes y el tercero el día.
+
+Fecha_inicial = np.array([1900,1,1])
+Primera_fecha = np.array([1901,1,1])
+Ultima_fecha = np.array([2000,12,31])
+
+#Se extraen por aparte los años del rango de fechas (1901 a 2000)
+primer_año = Primera_fecha[0]
+ultimo_año = Ultima_fecha[0]
+
+#Se extraen aparte los meses de inicio y fin del primer y último año (enero 1901 y diciembre 2000)
+Mes_primer_año = Primera_fecha[1]
+Mes_ultimo_año = Ultima_fecha[1]
+
+#Se crea un diccionario con la representación numérica y categórica de los días de la semana
+#se incluyen los valores de 8, 9 y 10 ya que el cálculo de días se realiza dividiendo el número de
+#días del mes en 7, tomando el valor del residuo y sumándolo al valor de la posición del primer día.
+#Esta operación puede arrojar un valor máximo de 10 por lo cual estos valores se incluyen en el diccionario
+#asignándolos al días de la semana correspondiente.
+días = {1:'Lunes', 2:'Martes', 3:'Miércoles', 4:'Juves', 5:'Viernes', 6:'Sábado', 7:'Domingo',
+       8 : 'Lunes', 9:'Martes', 10:'Miércoles'}
+
+#Se crea un diccionario con los días excedentes del diccionario anterior para hacer la asignación al día correspondiente (a nivel numérico)
+
+conv_días= {8 : 1, 9:2, 10 : 3}
+
+#Se determina el listado de años bisiestos partiendo de la premisa de que si el año de cambio de siglo es divisible por 400
+#entonces éste es un año bisiesto. Se divide el año de la última fecha del rango a revisar en 400 y a partir de ello
+#se crea el listado de años bisisestos restando de a 4 años para dicho año.
+
+if ultimo_año%400 == 0:
+    bisiesto = np.arange(ultimo_año, primer_año, -4)
+    bisiesto.sort()
+
+#Se crean dos listas con las condiciones de valores a sumar en el cmambio de mes para los meses de años bisiestos y no bisisestos.
+
+si_bisiesto = {1:31, 2:29, 3:31, 4: 30, 5:31, 6:30, 7:31, 8:31, 9:30, 10:31, 11:30, 12:31}
+no_bisiesto = {1:31, 2:28, 3:31, 4: 30, 5:31, 6:30, 7:31, 8:31, 9:30, 10:31, 11:30, 12:31}
+
+#Se inicia un contador en 0, éste dará el dato de la cantidad de meses que inician en domingo.
+
+domingo = 0
+
+#Se determina el día de la semana del año 1901 con base en el día de la semana del 01/01/1900 (lunes = 1).
+#Se realiza la operación para determinar el residuo de la división entre los 365 día (año no bisiesto) y 7 días de la semana.
+#El valor se suma a el valor del día de la semana del 01/01/1900(lunes=1),el cual genera el día de la semana de la Primera fecha (10/01/1901)
+
+Día_primera_fecha = (365%7) + Fecha_inicial[2]
+
+#Al ser una operación que da igual a dos, se sobreentiende que el día de la semana del 01/01/1901 es martes 
+
+#Se inicia validando si el primer día del primer año es un domingo, de ser así, el contador debe aumentarse en uno.
+
+if días[Día_primera_fecha] == 'Domingo':
+    domingo = domingo + 1
+    
+    
+#Se realiza una iteración sobre cada mes de cada año, iniciando el 1ro de enero de 1901
+
+for year in np.arange(primer_año,ultimo_año + 1): #se incluye un +1 para que incliuya el año 2000
+    for month in np.arange(Mes_primer_año, Mes_ultimo_año + 1):     
+            
+        if year not in bisiesto: # se valida si el registro del loop corresponde a un año bisiesto
+            if Día_primera_fecha > 7: #para manejar los días de la semana con números del 1 al 7, se hace una valdiación
+                Día_primera_fecha = conv_días[Día_primera_fecha] #de ser mayor a 7, se ajusta usando el diccionario de conv_días
+                Día_primera_fecha = Día_primera_fecha + (no_bisiesto[month]%7) #se suma al día del registro del loop, el valor de
+                #residuo de la divisón de los días del mes del registro y los días de la semana (7). Esta suma determina el
+                #valor numérico del día en que inicia el mes siguiente.
+                if días[Día_primera_fecha] == 'Domingo': #En caso de que sea un domingo (7), se incrementa el contador en uno. 
+                    domingo = domingo + 1                
+                
+            else:
+                Día_primera_fecha = Día_primera_fecha + (no_bisiesto[month]%7)
+                if días[Día_primera_fecha] == 'Domingo':
+                    domingo = domingo + 1
+                                    
+          
+                
+        else: #de no ser un año bisiesto, se realiza el mismo procedimiento pero validando el número de meses de la lista respectiva.
+            if Día_primera_fecha > 7:
+                Día_primera_fecha = conv_días[Día_primera_fecha]
+                Día_primera_fecha = Día_primera_fecha + (si_bisiesto[month]%7)
+                if días[Día_primera_fecha] == 'Domingo':
+                    domingo = domingo + 1                
+                
+            else:
+                Día_primera_fecha = Día_primera_fecha + (si_bisiesto[month]%7)
+                if días[Día_primera_fecha] == 'Domingo':
+                    domingo = domingo + 1
+
+#Una vez termina la iteración, se devuelve el valor del contador domingo (respuesta de 171)
+print('El número de meses que iniciaron un domingo entre:  ', Primera_fecha, ' y ',Ultima_fecha, ' es: ' ,domingo)
