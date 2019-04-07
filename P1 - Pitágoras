@@ -1,0 +1,47 @@
+import numpy as np
+
+#Se importa la librería de Numpy para realizar las iteraciones sobre arrays.
+
+#Se definen los rangos de los valores que pueden tomar los lados del tríangulo abc.
+#Dado que una dos de las condiciones dadas es que a+b+c es igual a 1000 y a<b<c,
+#se deduce que el valor de c debe ser mayor a una tercera parte de 1000, es decir, debe ser mayor o igual a 334.
+#Así mismo, se deduce que el valor del lado mas corto, a, no debe ser mayor a una tercera parte de 1000, es decir
+#a debe ser menor a igual a 333. Con esto, se definen los rangos de los posibles valores de cada variable.
+
+a = np.arange(1,333)
+b = np.arange(2,1000)
+c = np.arange(334,1000)
+
+#Se crea un array unidimensional el cual tendrá los valores de respuesta de las tres variables a, b y c respectivamente.
+#El array se crea con los valores de cero para que inicie y se adicionen los valores de respuesta.
+
+w = np.array([[0,0,0]])
+
+#Dado que se requiere crear tripletas con todas las posibles combinaciones e iterar sobre cada una de ellas, se crea
+#un For loop para realizar dicha actividad con cada posible valor de a, b y c:
+
+for i in a:
+    for j in b:
+        for k in c:
+            while pow(i,2) + pow(j,2) == pow(k,2) and i<j<k and i+j+k ==1000: #se evalúan las tres condiciones dadas.
+                w = np.append(w,[[i,j,k]],axis=0) #Si se cumple la condición anterior, se adiciona al array w el valor de a,b y c.
+
+#Se muestran los valores resultantes de a,b y c
+print('a:', w[1][0])
+print('b:', w[1][1])
+print('c:', w[1][2])
+print('-'*50)
+#Se muestran los valores del cuadrado de a, b y c
+print('a al cuadrado:', pow(w[1][0],2))
+print('b al cuadrado:', pow(w[1][1],2))
+print('c al cuadrado:', pow(w[1][2],2))
+print('-'*50)
+#Se comprueba que se cumpla la condición de la suma de cuadrados
+print('a2 + b2:', pow(w[1][0],2) + pow(w[1][1],2) )
+print('c2:     ', pow(w[1][2],2))
+print('-'*50)
+#Se comprueba que se cumpla la condición de que la suma de los tres lados deba ser igual a 1000
+print('a + b + c:',w[1][0] + w[1][1] + w[1][2])
+print('-'*50)
+#Se muestra el resultado del producto de los tres lados el cual es 31875000
+print('El producto de a,b y c es:', w[1][0] * w[1][1] * w[1][2])
