@@ -1,5 +1,6 @@
 import numpy as np
 
+
 #Se importa la librería de Numpy para realizar las iteraciones sobre arrays.
 
 #Se definen los rangos de los valores que pueden tomar los lados del tríangulo abc.
